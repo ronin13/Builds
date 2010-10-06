@@ -1,8 +1,10 @@
 # $Id: PKGBUILD 78249 2010-04-20 04:42:42Z dgriffiths $
 # Maintainer: tobias [tobias [at] archlinux.org]
+# http://does-not-exist.org/mail-archives/mutt-dev/msg14809.html
 pkgname=mutt
-pkgver=1.5.20
-patchdate="20090619"
+pkgver=1.5.21
+patchdate="20101506"
+sidebarpatch=5302767aa6aa
 pkgrel=4
 pkgdesc="A small but very powerful text-based mail client"
 arch=(i686 x86_64)
@@ -12,11 +14,8 @@ depends=('slang' 'openssl' 'gdbm' 'mime-types' 'zlib' 'libsasl' 'gpgme')
 makedepends=('gnupg')
 install=${pkgname}.install
 source=(ftp://ftp.mutt.org/mutt/devel/${pkgname}-${pkgver}.tar.gz 
-        mutt-unmailbox.patch
-		trash_folder-1.5.18.patch
-		patch-${pkgver}.vvv.nntp.2
-		patch-${pkgver}.sidebar.${patchdate}.txt
-        mutt_ssl.patch)
+        patch-${pkgver}.cprogress
+		patch-${pkgver}.sidebar-$sidebarpatch)
 
 url="http://www.mutt.org/"
 #md5sums=('027cdd9959203de0c3c64149a7ee351c'
@@ -27,23 +26,22 @@ build() {
   cd ${srcdir}/${pkgname}-${pkgver}
 
   # patch a segfault bug in 1.5.20 -- remove for next release
-  patch -p1 < ${srcdir}/mutt-unmailbox.patch || return 1
+  #patch -p1 < ${srcdir}/mutt-unmailbox.patch || return 1
   # patch for openssl-1
-  patch -Np1 -i ${srcdir}/mutt_ssl.patch || return 1
-  patch -p1 -i ../patch-${pkgver}.sidebar.${patchdate}.txt
-  patch -p1 -i ../patch-${pkgver}.vvv.nntp.2
-  patch -p1 -i ../trash_folder-1.5.18.patch
+  #patch -Np1 -i ${srcdir}/mutt_ssl.patch || return 1
+  patch -p1 -i ../patch-${pkgver}.sidebar-$sidebarpatch
+#  patch -p1 -i ../patch-${pkgver}.cprogress
 
    aclocal -I m4
    autoheader
    automake --foreign
    autoconf
 
-
+ # --enable-nntp
   ./configure --prefix=/usr --sysconfdir=/etc \
-    --enable-pop --enable-imap --enable-nntp --enable-smtp \
+    --enable-pop --enable-imap  --enable-smtp \
     --with-sasl --with-ssl=/usr  --without-idn \
-    --enable-hcache --enable-pgp --enable-inodesort \
+    --enable-hcache --enable-pgp  \
 	 --enable-compressed --with-regex \
 	 --enable-gpgme --with-slang=/usr
   make || return 1
