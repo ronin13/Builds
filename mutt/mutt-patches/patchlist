@@ -1,0 +1,207 @@
+[Home]PatchList
+
+MuttWiki | RecentChanges | Preferences | EDITwiki
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+This page is for listing third party patches for Mutt core code. QueryCommand
+scripts, 3rd party MuttTools and UserPages have their own places.
+
+  • http://www.pizzashack.org/mutt/ -- Derek Martin (ddm) [Mutt 1.4/1.5]
+      □ pgp-send-menu -- alternative PGP send menu
+      □ pgp-auto-decode -- automatically decode traditional PGP messages (1.5.8
+        has this ability)
+  • http://home.worldonline.dk/byrial/mutt/patches/ -- Byrial Ole Jensen (bj)
+    [Mutt 1.2/1.3]
+      □ noquote_hdr_term -- don't quote the header terminator when replying
+        with headers
+      □ status-time -- include current time in status line
+      □ my_hdr_subject -- execute send-hooks before setting subject
+      □ hash_destroy -- speed up a little bit closing of mailboxes
+  • http://cedricduval.free.fr/mutt/patches/ -- Cedric Duval (cd) [Mutt 1.4/
+    1.5]
+      □ trash_folder and purge_message -- move deleted messages to trash folder
+      □ my_list -- lists for patterns, hooks, mailboxes and subscribe/lists
+      □ signatures_menu -- menu to choose signatures
+      □ ifdef -- check for compile time features
+      □ pattern_broken -- match broken threads
+      □ source_multiple -- source multiple files at once
+  • http://www.schrab.com/aaron/mutt/ -- Aaron Schrab (ats) [Mutt 1.5]
+      □ date_conditional -- vary format of dates in the index based on how
+        recent the message is
+      □ mark_old -- make mark_old a quad option
+      □ parent_match -- pattern matching against parent message
+  • http://www.rachinsky.de/nicolas/mutt.shtml -- Nicolas Rachinsky (nr) [Mutt
+    1.3/1.5]
+      □ crypt-autohook -- autosign/autoencrypt when recipient keys are
+        available
+  • http://www.42.org/~sec/mutt/ -- Stefan Zehl (sec) [Mutt 1.3-1.4]
+      □ _A -- %A displays number of messages in pager_format
+      □ backlog -- add X-Current-Backlog: header to outgoing messages
+      □ keypad -- work around broken ncurses on FreeBSD 2.2.7
+      □ pager_status_on_top -- colored pager status on top/bottom
+      □ reverse_reply -- use realname from aliases in replies [see below for
+        newer version]
+      □ mailcap-fix -- fix mailcap handling for mails containing only a non
+        displayable attachment
+      □ pgp_shorten -- shorten PGP output length
+      □ previous_jump -- jump back to message last jumped from
+  • http://www.spinnaker.de/mutt/compressed/ -- Roland Rosenfeld (rr) [Mutt
+    0.91-1.5]
+      □ compressed -- support for compressed/encrypted folders
+  • http://mutt.org.ua/download/ -- Vsevolod Volkov (vvv) [Mutt 1.1-1.5]
+      □ compressed -- support for compressed/encrypted folders [use the patch
+        from spinnaker.de instead! -- Myon]
+      □ initials -- author initials in index_format
+      □ nntp -- NNTP/news folder support
+      □ quote -- finetune format of quoted text
+      □ slang -- alternate thread tree for linking with slang
+  • http://www.woolridge.org/mutt/ -- Dale Woolridge (dw) [Mutt 1.4/1.5]
+      □ maildir-mtime -- sort maildirs by latest entry in new/ in folder brower
+      □ pgp-menu-traditional -- traditional PGP signatures in compose menu
+      □ confirm-crypt-hook -- allows you to skip the "Use keyID" prompt
+      □ multiple-crypt-hook -- multiple crypt-hooks with the same pattern,
+        multiple keyIDs per pattern
+      □ crypt-autoselectkey -- autoselect key when only one available in "PGP
+        keys" menu
+      □ mbox-hook -- printf-like sequences in mbox-hook mailbox argument
+      □ pgp-timeout -- increase timeout period for pgp_timeout
+      □ pgp-hook -- combines confirm-crypt-hook, multiple-crypt-hook, and
+        crypt-autoselectkey
+      □ urlview-html -- make urlview produce HTML
+  • http://home.uchicago.edu/~dgc/mutt/ -- David Champion (dgc) [Mutt 1.4/1.5]
+      □ krb -- fix MIT Kerberos 1.2.4 linking problems
+      □ xlabel-ext -- edit X-Label: headers (an alternative way without
+        patching is in UserPages)
+      □ unbind -- unbind key bindings
+      □ attach -- count and display attachments in index
+      □ deepif -- nested if-else sequences in format strings
+      □ isalias -- pattern matching against aliases
+      □ markmsg -- set jump marks on messages
+      □ softfill -- pad space in index_format: http://home.uchicago.edu/~dgc/sw
+        /mutt/patch-1.5.6.dgc.softfill.2
+      □ fmtpipe -- use pipes in format strings
+  • http://debian.lpr.ch/Mutt/ -- Lukas P. Ruf (lpr) [Mutt 1.5]
+      □ signin and signoff -- greeting and regrad pre/appended to outgoing
+        messages
+      □ collapse_flagged -- do not collapse threads containing flagged messages
+  • http://tobbe.nu/blog/2008/04/04/mutt-inform-screen-patch/ -- Tobias
+    Bengtsson (ydo) [Mutt ??]
+      □ inform_screen -- send escape code to screen on new mail
+  • http://www.wolfermann.org/mutt.html -- Armin Wolfermann (aw) [Mutt 1.5]
+      □ jumptagged -- jump forward/backward between tagged messages
+      □ listreply -- ask when sending list message replies to author only
+      □ timeouthook -- call mutt commands when $timeout expires
+  • http://lunar-linux.org/index.php?page=mutt-sidebar -- Terry P. Chan [Mutt
+    1.5]
+      □ sidebar -- nice sidebar that shows folder list
+      □ past versions: [Justin Hibbits], [Thomer M. Gil]
+  • http://savannah.nongnu.org/projects/mutt-guile
+      □ mutt-guile -- Extensible Mutt: scripting language for Mutt using Guile
+      □ mutt-guile Wiki: http://amacleod.is-a-geek.org/mutt-guile/ (set up by
+        AllisterMacLeod)
+  • http://www.emaillab.org/mutt/download15.html.en, [Source""Forge page],
+    [download] -- Takizawa Takashi [Mutt 1.2-1.5]
+      □ ja -- japanese patch
+      □ ja manual: http://www.emaillab.org/mutt/1.5/doc/manual-ja-patch.en.txt
+      □ assumed_charset -- charsets which are to be used for header fields and
+        message body with no encoding indication
+      □ file_charset (attach_charset) -- list of charsets used for autosensing
+        the charset of a text file when you attach it.
+      □ create_rfc2047_parameters -- add rfc2047-encoded parameters to
+        Content-Type. this is prohibited by the standard, but some buggy mail
+        clients require this
+      □ nonascii_old_pgp -- [1.4] (pgp_charsethack is available for greater
+        than 1.5.8)
+  • http://wwwcip.informatik.uni-erlangen.de/~sithglan/mutt/ -- Thomas
+    Glanzmann (tg) [Mutt 1.5]
+      □ color-status -- colorize status line
+  • http://dwyn.net/mutt/ -- Tudor Bosman [Mutt 1.4]
+      □ headercache -- for IMAP (old version, see above for new)
+  • http://www.df7cb.de/projects/mutt/ -- Christoph Berg (cb, Myon) [Mutt 1.5]
+      □ chdir -- 'cd' command to change mutt's current directory
+      □ reverse_reply -- use realname from aliases in replies (similar to
+        $reverse_alias)
+      □ xface -- updated slrnface patch to display X-Face headers in mutt
+  • ftp://ftp.gnupg.org/gcrypt/alpha/aegypten -- Werner Koch (wk) [Mutt 1.5]
+      □ cryptmod, gpgme -- gpgme support for Mutt (1.5.8 has this ability) see
+        also http://www.gnupg.org/aegypten2/ and
+        <87u0zkib7m.fsf@vigenere.g10code.de>
+  • http://www.deez.info/sengelha/code/mutt-libesmtp/ -- Steven Engelhard (sde)
+    [Mutt 1.4/1.5]
+      □ libesmtp -- use libESMTP instead of an external MTA to send mail
+      □ void_passphrase_on_failed_sign -- automatically forget wrong passphrase
+  • ftp://ftp.sonic.net/pub/users/enrico/mutt -- G. Paul Ziemba (gpz) [Mutt
+    1.4]
+      □ tagged-macros -- make tag-prefix play nice with macros
+  • http://www.fiction.net/blong/programs/mutt/ -- Brandon Long (bl) [Mutt
+    0.xx]
+      □ cygwin -- Cygwin32 NT/95 Port (old)
+      □ mx_nntp -- NNTP patch (old)
+      □ content_md5 -- content-MD5 (RFC 1864) support (old)
+      □ folder_count -- count number of messages in folders in folder list
+        (old)
+      □ uudeview -- uuencoding, xxencoding, and BinHEX? support (very old)
+      □ altpgp -- alternative PGP view (very old)
+  • http://www.elho.net/dev/mutt/ -- Elmar Hoffmann (eh) [Mutt 1.5]
+      □ thread_subject -- make hiding of subjects in a thread optional
+  • http://www.plumlocosoft.com/software/ -- Eric Hustvedt (reh) [Mutt 1.5]
+      □ imap_fcc_status -- prevent saving of Status: headers when using fcc
+        with IMAP. Intended for use with Courier's IMAP outbox support.
+  • http://www.spocom.com/users/gjohnson/mutt/patches.html -- Gary Johnson (gj)
+    [Mutt 1.5]
+      □ stuff_all_quoted -- improve the appearance of format=flowed messages
+      □ attach_sanitize -- sanitize file names when saving attachments
+      □ sigontop_space_fix -- add blank line following 'sigontop' signature
+  • http://greek0.net/mutt.html -- Christian Aichinger (Greek0) [Mutt 1.5]
+      □ indexcolor -- custom colors for author, subject, date, etc. in the
+        index display
+  • http://www.momonga-linux.org/~tamo/ -- Tamo [Mutt 1.5]
+      □ patch-1.5.8.tamo.patterns.3 -- pattern-menu on pattern-prompt (tab key
+        after ~ will show it)
+      □ patch-1.5.9.tamo.POTFILE.4 -- improve GPGME code
+      □ patch-1.5.8.tamo.comval_help.2 -- status-commands
+      □ http://does-not-exist.org/mail-archives/mutt-dev/msg01444.html --
+        smooth scroll
+      □ http://tamo.tdiary.net/20081107.html#p01 -- ":set" auto-complete for
+        path
+  • http://www.ogersoft.at/freepatches/mutt/ignore-thread.patch -- Gerhard
+    Oettl
+      □ ignore-thread -- permanently ignore threads
+      □ updated for 1.5.20 at http://ben.at.tanjero.com/patches/
+        ignore-thread-1.5.20.patch
+  • http://expass.de/mutt -- Frank Luithle
+      □ mutt-1.5.9_pgp-unverbose-patch.diff -- same as pgp_shorten by
+        sec@42.org, but for version 1.5.9
+  • [patch-1.5.11.as.echo.1] - new echo command for visual feedback --
+    AdamSpiers
+  • PluginSupport -- add support for dynamically loading extensions to Mutt
+  • http://bjk.sourceforge.net/pwmd/ -- Ben Kibbey (bjk) [Mutt 1.5]
+      □ Password Manager Daemon (pwmd). Fetches auth/server info from pwmd.
+
+Archived patches (included in mutt)
+
+  • http://cedricduval.free.fr/mutt/patches/ -- Cedric Duval (cd) [Mutt 1.4/
+    1.5]
+      □ edit_threads -- link and break threads (included in 1.5.10)
+  • http://wwwcip.informatik.uni-erlangen.de/~sithglan/mutt/ -- Thomas
+    Glanzmann (tg) [Mutt 1.5]
+      □ header-cache -- for maildir / imap (included in 1.5.9)
+      □ mutt-thread -- match whole threads containing messages matching
+        patterns (extends threadcomplete; included in 1.5.12)
+  • http://www.df7cb.de/projects/mutt/ -- Christoph Berg (cb, Myon) [Mutt 1.5]
+      □ current_shortcut -- makes the ^ character a shortcut for the currently
+        open mailbox (new version) (1.5.10 has this ability)
+      □ menu_context -- context lines for menus (similar to $pager_context)
+        (1.5.8 has this ability)
+      □ thread_pattern -- obsolete, see Thomas Glanzmann's mutt-thread above
+  • http://www.vinc17.org/mutt/index.en.html -- Vincent Lef vre [Mutt 1.5]
+      □ patch-1.5.6.vl.savehist.1 -- persistant prompt history of commands,
+        files, patterns... (applied in 1.5.15)
+  • http://mutt.kublai.com/ -- Brendan Cully
+      □ patch-1.5.11.bc.smtp.10 -- built-in ESMTP relay support. (applied in
+        1.5.15)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MuttWiki | RecentChanges | Preferences | EDITwiki
+Read EDITwiki in nav-bar!!! | View other revisions
+Last edited September 8, 2010 7:58 am by 17.101.32.38 (diff)
+Search: [                    ]

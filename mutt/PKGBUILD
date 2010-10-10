@@ -1,5 +1,4 @@
-# $Id: PKGBUILD 78249 2010-04-20 04:42:42Z dgriffiths $
-# Maintainer: tobias [tobias [at] archlinux.org]
+# Raghavendra Prabhu raghu dOt prabhu 13 aT google's mail
 # http://does-not-exist.org/mail-archives/mutt-dev/msg14809.html
 pkgname=mutt
 pkgver=1.5.21
@@ -14,7 +13,10 @@ depends=('slang' 'openssl' 'gdbm' 'mime-types' 'zlib' 'libsasl' 'gpgme')
 makedepends=('gnupg')
 install=${pkgname}.install
 source=(ftp://ftp.mutt.org/mutt/devel/${pkgname}-${pkgver}.tar.gz 
-        patch-${pkgver}.cprogress
+        patch-${pkgver}.vvv.nntp
+        patch-${pkgver}.vvv.initials
+        patch-${pkgver}.vvv.quote
+        patch-${pkgver}.rr.compressed
 		patch-${pkgver}.sidebar-$sidebarpatch)
 
 url="http://www.mutt.org/"
@@ -22,15 +24,21 @@ url="http://www.mutt.org/"
 #         'fa8e03a49a2fa7b294dc8237d928cdb7'
 #         '3f54850315502ad47405421339ffae60')
 
+failed(){
+    echo "Patching failed :$LINENO"
+    exit 1
+}
+
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
 
-  # patch a segfault bug in 1.5.20 -- remove for next release
-  #patch -p1 < ${srcdir}/mutt-unmailbox.patch || return 1
-  # patch for openssl-1
-  #patch -Np1 -i ${srcdir}/mutt_ssl.patch || return 1
-  patch -p1 -i ../patch-${pkgver}.sidebar-$sidebarpatch
-#  patch -p1 -i ../patch-${pkgver}.cprogress
+  patch -p1 -i ../patch-${pkgver}.sidebar-$sidebarpatch || failed
+  patch -p1 -i ../patch-${pkgver}.rr.compressed || failed
+#  patch -p1 -i ../patch-${pkgver}.vvv.nntp || failed
+  patch -p1 -i ../patch-${pkgver}.vvv.initials ||  failed
+  patch -p1 -i ../patch-${pkgver}.vvv.quote || failed
+
+
 
    aclocal -I m4
    autoheader
@@ -38,12 +46,13 @@ build() {
    autoconf
 
  # --enable-nntp
+ # sasl is only reqd for imap/pop and so is ssl 
+ # Requires tokyocabinet to be installed
   ./configure --prefix=/usr --sysconfdir=/etc \
-    --enable-pop --enable-imap  --enable-smtp \
-    --with-sasl --with-ssl=/usr  --without-idn \
-    --enable-hcache --enable-pgp  \
-	 --enable-compressed --with-regex \
-	 --enable-gpgme --with-slang=/usr
+    --disable-pop --disable-imap  --disable-smtp --without-idn \
+    --enable-hcache --enable-pgp \
+	 --enable-compressed --with-regex --without-qdbm --without-gdbm --with-tokyocabinet \
+	 --enable-gpgme --with-slang=/usr --disable-nls
   make || return 1
   make DESTDIR=${pkgdir} install
   rm -f ${pkgdir}/usr/bin/{flea,muttbug}
