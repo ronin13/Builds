@@ -1,0 +1,47 @@
+pkgname=bitlbee
+pkgver=1.3
+pkgrel=1
+pkgdesc="An IRC to IM gateway. Supports MSN, ICQ, Jabber, Yahoo!,AIM, Twitter and Identi.ca and OTR support"
+arch=('i686' 'x86_64')
+url="http://www.bitlbee.org/" 
+license=('GPL')
+# libotr for otr
+depends=('gnutls' 'glib2' 'libotr')
+optdepends=('xinetd: to run bitlbee through xinetd')
+install=${pkgname}.install
+backup=(etc/bitlbee/bitlbee.conf etc/bitlbee/motd.txt etc/xinetd.d/bitlbee)
+source=('bitlbee.xinetd'
+	'bitlbee.rcd')
+
+build() {
+    if [[ ! -d "$srcdir/bitlbee" ]];then
+        cd $srcdir
+        bzr branch http://code.bitlbee.org/bitlbee/
+        cd  ${pkgname} #-${pkgver}
+    else
+        cd ${srcdir}/${pkgname}  #-${pkgver}
+        bzr pull
+    fi
+	./configure --prefix=/usr --msn=0 --oscar=0 --strip=1 --plugins=1  \
+		--ssl=gnutls \
+		--etcdir=/etc/bitlbee \
+		--pidfile=/var/run/bitlbee/bitlbee.pid \
+		--ipcsocket=/var/run/bitlbee/bitlbee.sock --otr=plugin || return 1
+	make || return 1
+}
+
+package() {
+	cd ${srcdir}/${pkgname}-${pkgver}
+
+	install -dm755 ${pkgdir}/var/lib
+	install -o65 -g65 -dm0770 ${pkgdir}/var/lib/bitlbee
+	install -dm755 ${pkgdir}/var/run
+	install -o65 -g65 -dm755 ${pkgdir}/var/run/bitlbee
+	install -Dm644 ${srcdir}/bitlbee.xinetd \
+		${pkgdir}/etc/xinetd.d/bitlbee
+	install -Dm755 ${srcdir}/bitlbee.rcd \
+		${pkgdir}/etc/rc.d/bitlbee || return 1
+	make DESTDIR=${pkgdir} install || return 1
+	make DESTDIR=${pkgdir} install-etc || return 1
+	make DESTDIR=${pkgdir} install-dev || return 1
+}
