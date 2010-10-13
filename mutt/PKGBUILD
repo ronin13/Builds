@@ -9,7 +9,7 @@ pkgdesc="A small but very powerful text-based mail client"
 arch=(i686 x86_64)
 license=('GPL')
 url="http://www.mutt.org/"
-depends=('slang' 'openssl' 'gdbm' 'mime-types' 'zlib' 'libsasl' 'gpgme')
+depends=('slang' 'openssl' 'gdbm' 'mime-types' 'zlib' 'libsasl' 'gpgme' 'tokyocabinet')
 makedepends=('gnupg')
 install=${pkgname}.install
 source=(ftp://ftp.mutt.org/mutt/devel/${pkgname}-${pkgver}.tar.gz 
@@ -52,7 +52,7 @@ build() {
     --disable-pop --disable-imap  --disable-smtp --without-idn \
     --enable-hcache --enable-pgp \
 	 --enable-compressed --with-regex --without-qdbm --without-gdbm --with-tokyocabinet \
-	 --enable-gpgme --with-slang=/usr --disable-nls
+	 --enable-gpgme --with-curses=/usr --disable-nls
   make || return 1
   make DESTDIR=${pkgdir} install
   rm -f ${pkgdir}/usr/bin/{flea,muttbug}
