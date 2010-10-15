@@ -171,19 +171,19 @@ diff -uNp -r mutt-5302767aa6aa.orig/compose.c mutt-5302767aa6aa/compose.c
 +++ mutt-5302767aa6aa/compose.c	Sat Sep  4 20:32:59 2010
 @@ -72,7 +72,7 @@ enum
  
- #define HDR_XOFFSET 10
- #define TITLE_FMT "%10s" /* Used for Prompts, which are ASCII */
+ #define HDR_XOFFSET 14
+ #define TITLE_FMT "%14s" /* Used for Prompts, which are ASCII */
 -#define W (COLS - HDR_XOFFSET)
 +#define W (COLS - HDR_XOFFSET - SidebarWidth)
  
  static char *Prompts[] =
  {
-@@ -112,7 +112,7 @@ static void redraw_crypt_lines (HEADER *msg)
+@@ -143,7 +143,7 @@ static void redraw_crypt_lines (HEADER *msg)
  {
    int off = 0;
  
--  mvaddstr (HDR_CRYPT, 0, "Security: ");
-+  mvaddstr (HDR_CRYPT, SidebarWidth, "Security: ");
+-  mvprintw (HDR_CRYPT, 0, TITLE_FMT, "Security: ");
++  mvprintw (HDR_CRYPT, SidebarWidth,TITLE_FMT, "Security: ");
  
    if ((WithCrypto & (APPLICATION_PGP | APPLICATION_SMIME)) == 0)
    {
@@ -205,12 +205,12 @@ diff -uNp -r mutt-5302767aa6aa.orig/compose.c mutt-5302767aa6aa/compose.c
  		NONULL(SmimeCryptAlg));
        off = 20;
    }
-@@ -175,7 +175,7 @@ static void redraw_mix_line (LIST *chain)
+@@ -209,7 +209,7 @@ static void redraw_mix_line (LIST *chain)
    int c;
    char *t;
  
--  mvaddstr (HDR_MIX, 0,     "     Mix: ");
-+  mvaddstr (HDR_MIX, SidebarWidth,     "     Mix: ");
+-  mvprintw (HDR_MIX, 0, TITLE_FMT, "Mix: ");
++  mvprintw (HDR_MIX, SidebarWidth,TITLE_FMT,"Mix: ");
  
    if (!chain)
    {
@@ -232,10 +232,10 @@ diff -uNp -r mutt-5302767aa6aa.orig/compose.c mutt-5302767aa6aa/compose.c
    mutt_paddstr (W, buf);
  }
  
-@@ -252,10 +252,10 @@ static void draw_envelope (HEADER *msg, char *fcc)
-   draw_envelope_addr (HDR_TO, msg->env->to);
-   draw_envelope_addr (HDR_CC, msg->env->cc);
-   draw_envelope_addr (HDR_BCC, msg->env->bcc);
+@@ -308,10 +308,10 @@ static void draw_envelope (HEADER *msg, char *fcc)
+     }
+   }
+ #endif
 -  mvprintw (HDR_SUBJECT, 0, TITLE_FMT, Prompts[HDR_SUBJECT - 1]);
 +  mvprintw (HDR_SUBJECT, SidebarWidth, TITLE_FMT, Prompts[HDR_SUBJECT - 1]);
    mutt_paddstr (W, NONULL (msg->env->subject));

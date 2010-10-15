@@ -2,14 +2,14 @@
 # http://does-not-exist.org/mail-archives/mutt-dev/msg14809.html
 pkgname=mutt
 pkgver=1.5.21
-patchdate="20101506"
-sidebarpatch=5302767aa6aa
+patchdate="20101515"
+sidebarpatch=60e61c8d1747
 pkgrel=4
 pkgdesc="A small but very powerful text-based mail client"
 arch=(i686 x86_64)
 license=('GPL')
 url="http://www.mutt.org/"
-depends=('slang' 'openssl' 'gdbm' 'mime-types' 'zlib' 'libsasl' 'gpgme' 'tokyocabinet')
+depends=('slang' 'openssl' 'gdbm' 'mime-types' 'zlib' 'libsasl' 'gpgme')
 makedepends=('gnupg')
 install=${pkgname}.install
 source=(ftp://ftp.mutt.org/mutt/devel/${pkgname}-${pkgver}.tar.gz 
@@ -25,20 +25,18 @@ url="http://www.mutt.org/"
 #         '3f54850315502ad47405421339ffae60')
 
 failed(){
-    echo "Patching failed :$LINENO"
+    echo "Patching failed :$1"
     exit 1
 }
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
 
-  patch -p1 -i ../patch-${pkgver}.sidebar-$sidebarpatch || failed
-  patch -p1 -i ../patch-${pkgver}.rr.compressed || failed
-#  patch -p1 -i ../patch-${pkgver}.vvv.nntp || failed
-  patch -p1 -i ../patch-${pkgver}.vvv.initials ||  failed
-  patch -p1 -i ../patch-${pkgver}.vvv.quote || failed
-
-
+  patch -p1 -i ../patch-${pkgver}.rr.compressed         || failed $LINENO
+  patch -p1 -i ../patch-${pkgver}.vvv.nntp              || failed $LINENO
+  patch -p1 -i ../patch-${pkgver}.vvv.initials          || failed $LINENO
+  patch -p1 -i ../patch-${pkgver}.vvv.quote             || failed $LINENO
+  patch -p1 -i ../patch-${pkgver}.sidebar-$sidebarpatch || failed $LINENO
 
    aclocal -I m4
    autoheader
@@ -46,10 +44,10 @@ build() {
    autoconf
 
  # --enable-nntp
- # sasl is only reqd for imap/pop and so is ssl 
+ # sasl is only reqd for imap/pop and so is ssl
  # Requires tokyocabinet to be installed
   ./configure --prefix=/usr --sysconfdir=/etc \
-    --disable-pop --disable-imap  --disable-smtp --without-idn \
+    --disable-pop --disable-imap  --disable-smtp --without-idn --enable-nntp \
     --enable-hcache --enable-pgp \
 	 --enable-compressed --with-regex --without-qdbm --without-gdbm --with-tokyocabinet \
 	 --enable-gpgme --with-curses=/usr --disable-nls
