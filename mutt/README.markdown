@@ -3,11 +3,11 @@ Mutt build
 
 Patches used:
 -----------------------
-*compressed
-*sidebar
-*initials
-*quote
-*nntp
+* compressed
+* sidebar
+* initials
+* quote
+* nntp
 
 Features:
 -------------------
