@@ -13,15 +13,22 @@ backup=(etc/bitlbee/bitlbee.conf etc/bitlbee/motd.txt etc/xinetd.d/bitlbee)
 source=('bitlbee.xinetd'
 	'bitlbee.rcd')
 
+_bzrbranch=http://code.bitlbee.org/bitlbee
+_bzrmod=bitlbee
+
 build() {
-    if [[ ! -d "$srcdir/bitlbee" ]];then
-        cd $srcdir
-        bzr branch http://code.bitlbee.org/bitlbee/
-        cd  ${pkgname} #-${pkgver}
-    else
-        cd ${srcdir}/${pkgname}  #-${pkgver}
-        bzr pull
-    fi
+    cd ${srcdir}
+
+    msg "Connecting to the server...."
+
+    bzr checkout ${_bzrbranch}
+
+    msg "BZR checkout done or server timeout"
+    msg "Starting make..."
+
+    [ -d ./${_bzrmod}-build ] && rm -rf ./${_bzrmod}-build
+    cp -r ./${_bzrmod} ./${_bzrmod}-build
+    cd ./${_bzrmod}-build
 	./configure --prefix=/usr --msn=0 --oscar=0 --strip=1 --plugins=1  \
 		--ssl=gnutls \
 		--etcdir=/etc/bitlbee \
