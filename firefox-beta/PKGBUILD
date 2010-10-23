@@ -1,0 +1,127 @@
+# Maintainer: Jan "heftig" Steffens <jan.steffens@gmail.com>
+# Contributor:  Devin Cofer <ranguvar{AT]archlinux[DOT}us>
+# Contributor: blasse <koralik(at)gmail(dot)com>
+
+pkgname=firefox-beta
+pkgver=4.0b8pre
+pkgrel=1
+_build=2
+pkgdesc="Mozilla Firefox beta (XULRunner independent)"
+url="http://www.mozilla.org/projects/firefox"
+arch=('i686' 'x86_64')
+license=('MPL' 'GPL' 'LGPL')
+
+depends=('gtk2>=2.20.1' 'gcc-libs>=4.5.0' 'libidl2>=0.8.13' 'mozilla-common'
+         'libxt' 'hunspell>=1.2.8' 'startup-notification>=0.10' 'zlib'
+         'libnotify>=0.4' 'mime-types' 'dbus-glib>=0.86' 'desktop-file-utils'
+         'cairo' 'libpng>=1.4.0' 'alsa-lib>=1.0.23' 'libevent>=1.4')
+
+makedepends=('autoconf2.13' 'gcc>=4.5.0' 'zip' 'pkgconfig' 'diffutils'
+             'python2' 'wireless_tools' 'mesa' 'yasm')
+
+optdepends=('libgnomeui: GNOME integration and MIME handling'
+            'wireless_tools: Location-aware browsing'
+            'python: pyxpcom')
+
+provides=("firefox=$pkgver")
+conflicts=('firefox')
+
+#source=("ftp://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/$pkgver-candidates/build$_build/source/firefox-$pkgver.source.tar.bz2"
+source=("http://hg.mozilla.org/mozilla-central/archive/tip.tar.bz2"
+        'mozconfig' 'firefox.desktop' 'firefox-safe.desktop'
+        'fix-mozilla-launcher.patch' 'mozilla-firefox-1.0-lang.patch'
+        'flash-78414.patch'
+        'enable-x86_64-tracemonkey.patch'
+        'extend_pad.patch')
+
+build() {
+  mv mozilla-central-* mozilla-central
+  cd "$srcdir/mozilla-central"
+
+  cp "$srcdir/mozconfig" .mozconfig
+
+msg2 "Patching..."
+
+  # Don't strip if the user doesn't want us to... ;p
+  if [ "$(check_option strip)" = "n" ]; then
+    sed -e 's/--enable-strip/--disable-strip/' \
+        -e 's/--enable-install-strip/--disable-install-strip/' \
+        -i .mozconfig
+  fi
+
+  # Fix stub launcher - Arch
+  patch -Np0 -i "$srcdir/fix-mozilla-launcher.patch"
+
+  # Use LANG environment variable to choose locale
+  patch -Np1 -i "$srcdir/mozilla-firefox-1.0-lang.patch"
+
+  patch -Np1 -i "$srcdir/flash-78414.patch" || exit 1
+
+  # Enable bilinear filtering - may need patched cairo (cairo-ubuntu)
+  #patch -Np1 -i "$srcdir/extend_pad.patch"
+#  patch -Np0 -i "$srcdir"/enable-x86_64-tracemonkey.patch
+msg2 "Configuring..."
+
+  # The hash-style and as-needed flags are in Arch defaults anyways,
+  # and the other optimization flags are almost definitely safe.
+  export LDFLAGS="-Wl,-rpath,/usr/lib/firefox-$pkgver -Wl,-O1,--sort-common,--hash-style=gnu,--as-needed"
+
+  # Use Python 2
+  export PYTHON="/usr/bin/python2"
+
+  autoconf-2.13
+
+msg2 "Building..."
+
+  make -j1 -f client.mk build MOZ_MAKE_FLAGS="$MAKEFLAGS"
+}
+
+package() {
+  cd "$srcdir"/mozilla-central
+
+  make -j1 -f client.mk DESTDIR="$pkgdir" install
+
+  install -Dm644 "$srcdir/mozilla-central/browser/branding/unofficial/mozicon128.png" \
+    "$pkgdir/usr/share/pixmaps/firefox.png"
+
+  install -Dm644 "$srcdir/firefox.desktop" \
+    "$pkgdir/usr/share/applications/firefox.desktop"
+
+  install -Dm644 "$srcdir/firefox-safe.desktop" \
+    "$pkgdir/usr/share/applications/firefox-safe.desktop"
+
+  # Remove devel stuff.
+  rm -rf "$pkgdir/usr/include/"
+  rm -rf "$pkgdir/usr/lib/firefox-devel-$pkgver/"
+  rm -rf "$pkgdir/usr/share/idl/"
+}
+
+md5sums=('15950bdbbaf925a0158529bfe8658da8'
+         'df0a384f5c36bf2a9fc73aa29888ff78'
+         '68cf02788491c6e846729b2f2913bf79'
+         '5e68cabfcf3c021806b326f664ac505e'
+         '63eee2d1da3b43c9d604f2253f242f40'
+         'bd5db57c23c72a02a489592644f18995'
+         '1c3e448880c4473b613d47116b773c50')
+md5sums=('3824657bd6fc000fc0b90951fe3f4d1c'
+         'df0a384f5c36bf2a9fc73aa29888ff78'
+         '68cf02788491c6e846729b2f2913bf79'
+         '5e68cabfcf3c021806b326f664ac505e'
+         '63eee2d1da3b43c9d604f2253f242f40'
+         'bd5db57c23c72a02a489592644f18995'
+         '1c3e448880c4473b613d47116b773c50')
+
+md5sums=('a69d49c5cd9a4aa8520baed136002231'
+         'df0a384f5c36bf2a9fc73aa29888ff78'
+         '68cf02788491c6e846729b2f2913bf79'
+         '5e68cabfcf3c021806b326f664ac505e'
+         '63eee2d1da3b43c9d604f2253f242f40'
+         'bd5db57c23c72a02a489592644f18995'
+         '1c3e448880c4473b613d47116b773c50')
+md5sums=('a69d49c5cd9a4aa8520baed136002231'
+         'df0a384f5c36bf2a9fc73aa29888ff78'
+         '68cf02788491c6e846729b2f2913bf79'
+         '5e68cabfcf3c021806b326f664ac505e'
+         '63eee2d1da3b43c9d604f2253f242f40'
+         'bd5db57c23c72a02a489592644f18995'
+         '1c3e448880c4473b613d47116b773c50')

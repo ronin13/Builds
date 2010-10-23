@@ -1,0 +1,77 @@
+diff -uNr mozilla-central/gfx/thebes/gfxDrawable.cpp mozilla-central-new/gfx/thebes/gfxDrawable.cpp
+--- mozilla-central/gfx/thebes/gfxDrawable.cpp	2010-08-18 14:19:45.096298237 -0500
++++ mozilla-central-new/gfx/thebes/gfxDrawable.cpp	2010-08-18 14:31:17.225522499 -0500
+@@ -61,55 +61,6 @@
+     return gfxMatrix(deviceToUser).Multiply(aUserSpaceToImageSpace);
+ }
+ 
+-static void 
+-PreparePatternForUntiledDrawing(gfxPattern* aPattern,
+-                                const gfxMatrix& aDeviceToImage,
+-                                gfxASurface::gfxSurfaceType aSurfaceType,
+-                                const gfxPattern::GraphicsFilter aDefaultFilter)
+-{
+-    // In theory we can handle this using cairo's EXTEND_PAD,
+-    // but implementation limitations mean we have to consult
+-    // the surface type.
+-    switch (aSurfaceType) {
+-        case gfxASurface::SurfaceTypeXlib:
+-        case gfxASurface::SurfaceTypeXcb:
+-        {
+-            // See bug 324698.  This is a workaround for EXTEND_PAD not being
+-            // implemented correctly on linux in the X server.
+-            //
+-            // Set the filter to CAIRO_FILTER_FAST --- otherwise,
+-            // pixman's sampling will sample transparency for the outside edges
+-            // and we'll get blurry edges.  CAIRO_EXTEND_PAD would also work
+-            // here, if available
+-            //
+-            // But don't do this for simple downscales because it's horrible.
+-            // Downscaling means that device-space coordinates are
+-            // scaled *up* to find the image pixel coordinates.
+-            PRBool isDownscale =
+-                aDeviceToImage.xx >= 1.0 && aDeviceToImage.yy >= 1.0 &&
+-                aDeviceToImage.xy == 0.0 && aDeviceToImage.yx == 0.0;
+-            if (!isDownscale) {
+-                aPattern->SetFilter(gfxPattern::FILTER_FAST);
+-            }
+-            break;
+-        }
+-
+-        case gfxASurface::SurfaceTypeQuartz:
+-        case gfxASurface::SurfaceTypeQuartzImage:
+-            // Don't set EXTEND_PAD, Mac seems to be OK. Really?
+-            aPattern->SetFilter(aDefaultFilter);
+-            break;
+-
+-        default:
+-            // turn on EXTEND_PAD.
+-            // This is what we really want for all surface types, if the
+-            // implementation was universally good.
+-            aPattern->SetExtend(gfxPattern::EXTEND_PAD);
+-            aPattern->SetFilter(aDefaultFilter);
+-            break;
+-    }
+-}
+-
+ PRBool
+ gfxSurfaceDrawable::Draw(gfxContext* aContext,
+                          const gfxRect& aFillRect,
+@@ -120,15 +71,10 @@
+     nsRefPtr<gfxPattern> pattern = new gfxPattern(mSurface);
+     if (aRepeat) {
+         pattern->SetExtend(gfxPattern::EXTEND_REPEAT);
+-        pattern->SetFilter(aFilter);
+     } else {
+-        nsRefPtr<gfxASurface> currentTarget = aContext->CurrentSurface();
+-        gfxASurface::gfxSurfaceType surfaceType = currentTarget->GetType();
+-        gfxMatrix deviceSpaceToImageSpace =
+-            DeviceToImageTransform(aContext, aTransform);
+-        PreparePatternForUntiledDrawing(pattern, deviceSpaceToImageSpace,
+-                                        surfaceType, aFilter);
++        pattern->SetExtend(gfxPattern::EXTEND_PAD);
+     }
++    pattern->SetFilter(aFilter);
+ #ifdef MOZ_GFX_OPTIMIZE_MOBILE
+     pattern->SetFilter(gfxPattern::FILTER_FAST); 
+ #endif
