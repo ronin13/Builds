@@ -1,0 +1,91 @@
+# Maintainer: cantabile <cantabile dot desu at gmail dot com>
+# Contributor: extcake < extcake@gmail.com >
+# Based on the mplayer-mt-oss-git package
+
+pkgname=mplayer-mt-git
+pkgver=20101024
+pkgrel=1
+pkgdesc="A movie player for linux (Multithreaded, git version)"
+arch=('i686' 'x86_64')
+depends=('a52dec' 'aalib' 'oss' 'bzip2' 'cdparanoia' 'enca' 'faac'
+         'fontconfig' 'freetype2' 'gcc-libs' 'giflib' 'glibc' 'jack' 'lame'
+         'libcaca' 'libdca' 'libdvdnav' 'libdvdread' 'libgl' 'libjpeg>=7'
+         'libmad' 'libmng' 'libogg' 'libtheora' 'libx11'
+         'libxext' 'libxss' 'libxv' 'libxvmc' 'libxxf86dga'
+         'libxxf86vm' 'ncurses' 'x264>=20090925' 'xvidcore' 'zlib')
+license=('GPL')
+url="http://www.mplayerhq.hu/"
+makedepends=('git' 'live-media' 'mesa' 'python2' 'unzip' 'yasm')
+backup=('etc/mplayer/codecs.conf' 'etc/mplayer/input.conf')
+provides=('mplayer')
+conflicts=('mplayer')
+install=mplayer.install
+
+_gitroot="git://repo.or.cz/mplayer-build.git"
+_gitname="mplayer-mt"
+
+build() {
+  # Custom CFLAGS break the mplayer build
+  unset CFLAGS
+  unset LDFLAGS
+
+  cd ${srcdir}
+  if [[ -d $_gitname ]]; then
+    cd $_gitname
+    git pull
+  else
+    git clone $_gitroot $_gitname  && cd $_gitname
+  fi
+
+  echo "
+--prefix=/usr
+--enable-runtime-cpudetection
+--disable-alsa
+--disable-gui
+--disable-arts
+--disable-pulse
+--disable-tga
+--disable-xinerama
+--disable-xanim
+--disable-liblzo
+--disable-ftp
+--disable-inet6
+--enable-menu
+--disable-unrarexec
+--disable-smb
+--disable-tv-v4l1
+--disable-tv-v4l2
+--disable-pnm
+--disable-speex
+--disable-openal
+--disable-fribidi
+--disable-libdv
+--disable-musepack
+--disable-esd
+--disable-mga
+--enable-xvmc
+--disable-largefiles
+--disable-lirc
+--disable-lircc
+--disable-joystick
+--disable-tv
+--language=all
+--confdir=/etc/mplayer
+" > mplayer_options
+  for i in $(grep -r -l '/usr/bin/env python$' . 2>/dev/null); do sed -i 's:/usr/bin/env python$:&2:' "$i"; done
+  ./enable-mt
+  ./init --shallow
+  cd ${srcdir}
+  cp -r $_gitname $_gitname-build 
+  cd $_gitname-build
+
+  msg "Starting make..."
+
+  sed -i -e 's:#!/usr/bin/awk -f:#!/bin/awk -f:g' mplayer/vidix/pci_db2c.awk
+  make
+  make DESTDIR=${pkgdir} install
+  cp mplayer/etc/{codecs.conf,input.conf,example.conf} ${pkgdir}/etc/mplayer/
+  mkdir -p ${pkgdir}/usr/share/mplayer
+  ln -s /usr/share/fonts/TTF/DejaVuSans.ttf ${pkgdir}/usr/share/mplayer/subfont.ttf
+  rm -fr ${srcdir}/$_gitname-build
+}
