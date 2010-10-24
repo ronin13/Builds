@@ -1,5 +1,5 @@
 pkgname=bitlbee
-pkgver=1.3
+pkgver=3.0
 pkgrel=1
 pkgdesc="An IRC to IM gateway. Supports MSN, ICQ, Jabber, Yahoo!,AIM, Twitter and Identi.ca and OTR support"
 arch=('i686' 'x86_64')
