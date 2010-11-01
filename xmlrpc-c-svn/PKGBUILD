@@ -1,0 +1,38 @@
+# Maintainer:  "Lucky <aur.archlinux.org [at] lucky.take0ver [dot] net>
+# Constributor: Jonny Gerold <jonny@fsk141.com>
+
+pkgname=xmlrpc-c-svn
+_pkgname=xmlrpc-c
+pkgver=2040
+pkgrel=1
+pkgdesc="Programming library for writing an XML-RPC server or client in C or C++."
+url="http://xmlrpc-c.sourceforge.net"
+arch=('i686' 'x86_64')
+license=('BSD')
+makedepends=('curl' 'subversion')
+conflicts=('xmlrpc-c')
+provides=('xmlrpc-c')
+source=()
+md5sums=()
+
+_svnmod="${_pkgname}"
+_svntrunk="https://xmlrpc-c.svn.sourceforge.net/svnroot/xmlrpc-c/trunk"
+
+build() {
+  cd "${srcdir}"
+  msg "Connecting to ${_svnmod} SVN server..."
+  svn co ${_svntrunk} ${_svnmod} -r ${pkgver} 
+
+  msg "SVN checkout done or server timeout"
+  cd "${_svnmod}"
+  msg "Starting make..."
+
+  ./configure --prefix=/usr  \
+  --disable-wininet-client --disable-abyss-threads \
+  --disable-cgi-server \
+  --disable-abyss-server \
+  --disable-libwww-client \
+  --enable-libxml2-backend
+  make || return 1
+  make DESTDIR="${pkgdir}" install
+}
