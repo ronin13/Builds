@@ -1,0 +1,41 @@
+# Contributor: Raghavendra Prabhu 'tlonim' < raghu . prabhu13 AT gmail dot com >
+pkgname=lrzip-git
+pkgver=20101101
+pkgrel=1
+pkgdesc="Lzma RZIP by Con Kolivas"
+arch=('i686' 'x86_64')
+url="http://github.com/ckolivas/lrzip"
+license=('GPL')
+makedepends=('git')
+depends=('lzo2' 'bzip2' 'zlib' 'gcc-libs-multilib' 'nasm')
+conflicts=('lrzip')
+provides=('lrzip')
+
+_gitroot="git://github.com/ckolivas/lrzip"
+_gitname="lrzip"
+
+build() {
+
+  # CFLAGS recommended by developer 
+  CFLAGS="-O3 -march=native -fomit-frame-pointer"
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [ -d $_gitname ] ; then
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    git clone $_gitroot $_gitname
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+
+  ./configure --prefix=/usr
+  make || return 1
+  make DESTDIR="$pkgdir/" install
+} 
