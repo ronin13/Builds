@@ -4,7 +4,7 @@ pkgbase=vim-git
 pkgname=(vim vim-runtime)
 _topver=7.3
 _patchlevel=3
-pkgver=20101102
+pkgver=20101108
 pkgrel=1
 arch=('i686' 'x86_64')
 license=('custom:vim')
@@ -64,7 +64,7 @@ build() {
      --with-features=big --disable-gpm --disable-acl --with-x=no --disable-largefile \
      --disable-gui --disable-multibyte --enable-cscope --disable-xsmp --disable-xsmp-interact \
      --disable-netbeans --enable-pythoninterp   --disable-gtktest
-
+  make 
 }
 
 ##### Packaging #####
@@ -74,7 +74,7 @@ package_vim() {
   depends=("vim-runtime>=${pkgver}-${pkgrel}" 'gpm' 'perl')
   conflicts=('gvim')
 
-  make
+  #make
   cd ${srcdir}/vim-build
   make -j1 VIMRCLOC=/etc DESTDIR=${pkgdir} install
 
